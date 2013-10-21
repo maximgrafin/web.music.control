@@ -1,7 +1,7 @@
 {
    "manifest_version": 2,
 
-   "name": "музыка.пауза с хоткеями",
+   "name": "web.music.control",
    "version": "2.0",
 
    "icons": {
@@ -25,7 +25,7 @@
   ],
 
   "browser_action": {
-       "default_title": "пауза с хоткеями",
+       "default_title": "web.music.control",
        "default_icon": "Button_Pause.png",
 	"default_popup": "popup.html"
    }
