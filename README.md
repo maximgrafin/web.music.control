@@ -11,3 +11,11 @@ Also it keeps tcp connection with browser until global event occurs.
 So as son as hotKey was pressed, it sends command to browser and closes connection.
 
 "extension" adds a button to pause/play music and also it listens for service hokey.exe.
+To add extension:
+0. download current extension
+1. open chromium-based browser
+2. Go to settings -> tools -> extensions
+3. check "Developer mode"
+4. click "Load unpacked extension..." button and choose extension folder
+
+to start service just start install.bat. It adds hokey.exe to startup folder and starts service.
