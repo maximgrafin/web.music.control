@@ -48,7 +48,7 @@ function nextTrack() {
 
 			var flag = tab.url.indexOf('vk.com');
 			if (flag >= 0 && flag < 10) {
-				var command = 'var m = document.getElementById(\'head_music\'); if(m) m.click(); var e = document.getElementsByClassName(\'next\'); if(e.length>0) e[0].click()';
+				var command = 'var m = document.getElementById(\'head_music\'); if(m && m.className.indexOf(\'over\')<0) m.click(); var e = document.getElementsByClassName(\'next\'); if(e.length>0) e[0].click()';
 				var cmd = { code: command };
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
@@ -72,7 +72,7 @@ function prevTrack() {
 
 			var flag = tab.url.indexOf('vk.com');
 			if (flag >= 0 && flag < 10) {
-				var command = 'var m = document.getElementById(\'head_music\'); if(m) m.click(); var e = document.getElementsByClassName(\'prev\'); if(e.length>0) e[0].click()';
+				var command = 'var m = document.getElementById(\'head_music\'); if(m && m.className.indexOf(\'over\')<0) m.click(); var e = document.getElementsByClassName(\'prev\'); if(e.length>0) e[0].click()';
 				var cmd = { code: command };
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
