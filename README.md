@@ -17,5 +17,4 @@ To add extension:
 2. Go to settings -> tools -> extensions
 3. check "Developer mode"
 4. click "Load unpacked extension..." button and choose extension folder
-
-to start service just start install.bat. It adds hokey.exe to startup folder and starts service.
+5. start install.bat. It adds hokey.exe to startup folder and starts service.
