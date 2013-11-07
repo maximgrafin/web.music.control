@@ -35,6 +35,17 @@ function togglePause() {
 
 				chrome.tabs.executeScript(tab.id, cmd);
 			}
+
+			var flag = tab.url.indexOf('soundcloud.com');
+			if (flag >= 0 && flag < 10) {
+				var toggleCommand = 'var es=document.getElementsByClassName(\'playControl\');if(es && es[0]) es[0].click();';
+				var pauseCommand = 'var es=document.getElementsByClassName(\'playControl\');if(es && es[0] && es[0].className && es[0].className.indexOf(\'playing\')>=0) es[0].click();';
+
+				var cmd = { code: first ? toggleCommand : pauseCommand };
+				first = false;
+
+				chrome.tabs.executeScript(tab.id, cmd);
+			}
 		}
 	});
 }
@@ -66,6 +77,14 @@ function nextTrack() {
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
 			}
+
+			var flag = tab.url.indexOf('soundcloud.com');
+			if (flag >= 0 && flag < 10) {
+				var command = 'var es=document.getElementsByClassName(\'skipControl__next\');if(es && es[0]) es[0].click();';
+				var cmd = { code: command };
+				chrome.tabs.executeScript(tab.id, cmd);
+				return;
+			}
 		}
 		window.close();
 	})
@@ -90,9 +109,18 @@ function prevTrack() {
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
 			}
+
 			var flag = tab.url.indexOf('8tracks.com');
 			if (flag >= 0 && flag < 10)
 				return;
+
+			var flag = tab.url.indexOf('soundcloud.com');
+			if (flag >= 0 && flag < 10) {
+				var command = 'var es=document.getElementsByClassName(\'skipControl__previous\');if(es && es[0]) es[0].click();';
+				var cmd = { code: command };
+				chrome.tabs.executeScript(tab.id, cmd);
+				return;
+			}
 		}
 		window.close();
 	})
