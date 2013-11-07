@@ -1,4 +1,4 @@
-function togglePause(justUpdate) {
+function togglePause() {
 	chrome.tabs.query({}, function (tabs) {
 		var first = true;
 		for (var i in tabs) {
@@ -6,11 +6,8 @@ function togglePause(justUpdate) {
 
 			var flag = tab.url.indexOf('music.yandex.ru');
 			if (flag >= 0 && flag < 10) {
-				var toggleCommand = (justUpdate ? '' : 'document.getElementsByClassName(\'b-jambox__play\')[0].click();')
-					+ 'document.getElementsByClassName(\'b-jambox__play\')[0].className.indexOf(\'b-jambox__playing\')>=0';
-
-				var pauseCommand = (justUpdate ? '' : 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e.className.indexOf(\'b-jambox__playing\')>=0)e.click();')
-					+ 'document.getElementsByClassName(\'b-jambox__play\')[0].className.indexOf(\'b-jambox__playing\')>=0';
+				var toggleCommand = 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e) e.click();';
+				var pauseCommand = 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e && e.className && e.className.indexOf(\'b-jambox__playing\')>=0) e.click();';
 
 				var cmd = { code: first ? toggleCommand : pauseCommand };
 				first = false;
@@ -19,11 +16,19 @@ function togglePause(justUpdate) {
 
 			var flag = tab.url.indexOf('vk.com');
 			if (flag >= 0 && flag < 10) {
-				var toggleCommand = (justUpdate ? '' : 'var e=document.getElementById(\'head_play_btn\');if(e)e.click();')
-					+ 'var result=false; var e=document.getElementById(\'head_play_btn\');if(e && e.className && e.className.indexOf(\'playing\')>=0) result=true; result';
+				var toggleCommand = 'var e=document.getElementById(\'head_play_btn\');if(e)e.click();';
+				var pauseCommand = 'var e=document.getElementById(\'head_play_btn\');if(e && e.className && e.className.indexOf(\'playing\')>=0)e.click();';
 
-				var pauseCommand = (justUpdate ? '' : 'var e=document.getElementById(\'head_play_btn\');if(e && e.className && e.className.indexOf(\'playing\')>=0)e.click();')
-					+ 'var result=false; var e=document.getElementById(\'head_play_btn\');if(e && e.className && e.className.indexOf(\'playing\')>=0) result=true; result';
+				var cmd = { code: first ? toggleCommand : pauseCommand };
+				first = false;
+
+				chrome.tabs.executeScript(tab.id, cmd);
+			}
+
+			var flag = tab.url.indexOf('8tracks.com');
+			if (flag >= 0 && flag < 10) {
+				var toggleCommand = 'var e=document.getElementById(\'player_play_button\');if(e)e.click();';
+				var pauseCommand = 'var e=document.getElementById(\'player_play_button\');if(e && e.style && e.style.display && e.style.display==\'none\')e.click();';
 
 				var cmd = { code: first ? toggleCommand : pauseCommand };
 				first = false;
@@ -53,6 +58,14 @@ function nextTrack() {
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
 			}
+
+			var flag = tab.url.indexOf('8tracks.com');
+			if (flag >= 0 && flag < 10) {
+				var command = 'var e = document.getElementById(\'player_skip_button\'); if(e) e.click()';
+				var cmd = { code: command };
+				chrome.tabs.executeScript(tab.id, cmd);
+				return;
+			}
 		}
 		window.close();
 	})
@@ -77,6 +90,9 @@ function prevTrack() {
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
 			}
+			var flag = tab.url.indexOf('8tracks.com');
+			if (flag >= 0 && flag < 10)
+				return;
 		}
 		window.close();
 	})
