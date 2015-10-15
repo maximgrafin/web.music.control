@@ -7,7 +7,7 @@ This is a solution for control web-based music players with global hotkeys.
 <br />
 hotKey.bin/hokey.exe is a binary that starts a service 
 <br />
-It listens for global hotkeys like ctrl + alt + home, ctrl + alt + pgUp, ctrl + alt + pgDwn.
+It listens for global hotkeys: ctrl + alt + home, ctrl + alt + pgUp, ctrl + alt + pgDwn, media play/pause
 <br />
 Also it keeps tcp connection with browser until global event occurs. 
 <br />
