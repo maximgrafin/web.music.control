@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-class Programm
+internal class Programm
 {
 	private const int WH_KEYBOARD_LL = 13;
 	private const int WM_KEYDOWN = 0x0100;
 	private static LowLevelKeyboardProc _proc = HookCallback;
 	private static IntPtr _hookID = IntPtr.Zero;
-	private static string hotKeyRaised="";
-	private static int timeoutSeconds=60;
+	private static string hotKeyRaised = "";
+	private static int timeoutSeconds = 60;
 
 	private static EventWaitHandle hotKeyPressed = new EventWaitHandle(false, EventResetMode.AutoReset);
 
-	static void Main(string[] args)
+	private static void Main(string[] args)
 	{
 		_hookID = SetHook(_proc);
 		CreateListerner();
@@ -35,7 +37,7 @@ class Programm
 
 	private static void ListenerCallback(IAsyncResult result)
 	{
-		HttpListener listener = (HttpListener)result.AsyncState;
+		HttpListener listener = (HttpListener) result.AsyncState;
 		HttpListenerContext context = listener.EndGetContext(result);
 		HttpListenerRequest request = context.Request;
 		HttpListenerResponse response = context.Response;
@@ -51,14 +53,14 @@ class Programm
 		else
 			responseString = "nothingHappened";
 
-		byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+		byte[] buffer = Encoding.UTF8.GetBytes(responseString);
 		response.ContentLength64 = buffer.Length;
-		System.IO.Stream output = response.OutputStream;
+		Stream output = response.OutputStream;
 		output.Write(buffer, 0, buffer.Length);
 		output.Close();
 		listener.BeginGetContext(ListenerCallback, listener);
 	}
-	
+
 	private static IntPtr SetHook(LowLevelKeyboardProc proc)
 	{
 		using (Process curProcess = Process.GetCurrentProcess())
@@ -75,44 +77,70 @@ class Programm
 	private static IntPtr HookCallback(
 		int nCode, IntPtr wParam, IntPtr lParam)
 	{
-		if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+		if (nCode >= 0 && wParam == (IntPtr) WM_KEYDOWN)
 		{
-			int vkCode = Marshal.ReadInt32(lParam);
-			Console.WriteLine(vkCode + " " + (Keys)vkCode);
-			if (vkCode == 36)// home
-			{
-				if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
-				{
-					Console.WriteLine(vkCode + " " + (Keys) vkCode);
-					hotKeyRaised = "pause";
-					hotKeyPressed.Set();
-					return lParam;
-				}
-			}
+			int pressedButtonCode = Marshal.ReadInt32(lParam);
+			Console.WriteLine(pressedButtonCode + " " + (Keys) pressedButtonCode);
 
-			if (vkCode == 33) //pgUp
-			{
-				if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
-				{
-					Console.WriteLine(vkCode + " " + (Keys) vkCode);
-					hotKeyRaised = "prev";
-					hotKeyPressed.Set();
-					return lParam;
-				}
-			}
+			if (IsPausePressed(pressedButtonCode))
+				return Pause(lParam);
 
-			if (vkCode == 34) //pgDwn
-			{
-				if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
-				{
-					Console.WriteLine(vkCode + " " + (Keys) vkCode);
-					hotKeyRaised = "next";
-					hotKeyPressed.Set();
-					return lParam;
-				}
-			}
+			if (IsPrevPressed(pressedButtonCode))
+				return Prev(lParam);
+
+			if (IsNextPressed(pressedButtonCode))
+				return Next(lParam);
 		}
 		return CallNextHookEx(_hookID, nCode, wParam, lParam);
+	}
+
+	private static bool IsPausePressed(int pressedButtonCode)
+	{
+		if (pressedButtonCode == 36) // home
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
+				return true;
+
+		if (pressedButtonCode == 179) // MediaPlayPause
+			return true;
+
+		return false;
+	}
+
+	private static bool IsNextPressed(int pressedButtonCode)
+	{
+		if (pressedButtonCode == 33) // pgUp
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
+				return true;
+		return false;
+	}
+
+	private static bool IsPrevPressed(int pressedButtonCode)
+	{
+		if (pressedButtonCode == 34) // pgDwn
+			if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
+				return true;
+		return false;
+	}
+
+	private static IntPtr Next(IntPtr lParam)
+	{
+		hotKeyRaised = "next";
+		hotKeyPressed.Set();
+		return lParam;
+	}
+
+	private static IntPtr Prev(IntPtr lParam)
+	{
+		hotKeyRaised = "prev";
+		hotKeyPressed.Set();
+		return lParam;
+	}
+
+	private static IntPtr Pause(IntPtr lParam)
+	{
+		hotKeyRaised = "pause";
+		hotKeyPressed.Set();
+		return lParam;
 	}
 
 	[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
