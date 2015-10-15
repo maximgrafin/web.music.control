@@ -25,7 +25,8 @@
     "https://8tracks.com/*",
     "http://soundcloud.com/*",
     "https://soundcloud.com/*",
-    "http://localhost:18711/*"
+    "http://localhost:18711/*",
+    "https://play.google.com/*"
   ],
 
   "browser_action": {

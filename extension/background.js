@@ -46,6 +46,17 @@ function togglePause() {
 
 				chrome.tabs.executeScript(tab.id, cmd);
 			}
+
+			var flag = tab.url.indexOf('play.google.com/music/listen');
+			if (flag >= 0 && flag < 10) {
+				var toggleCommand = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2]) es[0].children[2].click();';
+				var pauseCommand = ' var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2] es[0].children[2].className && es[0].children[2].className.indexOf(\'playing\')>=0) es[0].children[2].click();';
+
+				var cmd = { code: first ? toggleCommand : pauseCommand };
+				first = false;
+
+				chrome.tabs.executeScript(tab.id, cmd);
+			}
 		}
 	});
 }
@@ -85,6 +96,14 @@ function nextTrack() {
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
 			}
+
+			var flag = tab.url.indexOf('play.google.com/music/listen');
+			if (flag >= 0 && flag < 10) {
+				var command = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[3]) es[0].children[3].click();';
+				var cmd = { code: command };
+				chrome.tabs.executeScript(tab.id, cmd);
+				return;
+			}
 		}
 		window.close();
 	})
@@ -117,6 +136,14 @@ function prevTrack() {
 			var flag = tab.url.indexOf('soundcloud.com');
 			if (flag >= 0 && flag < 10) {
 				var command = 'var es=document.getElementsByClassName(\'skipControl__previous\');if(es && es[0]) es[0].click();';
+				var cmd = { code: command };
+				chrome.tabs.executeScript(tab.id, cmd);
+				return;
+			}
+
+			var flag = tab.url.indexOf('play.google.com/music/listen');
+			if (flag >= 0 && flag < 10) {
+				var command = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[1]) es[0].children[1].click();';
 				var cmd = { code: command };
 				chrome.tabs.executeScript(tab.id, cmd);
 				return;
