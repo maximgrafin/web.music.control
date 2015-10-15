@@ -108,7 +108,7 @@ internal class Programm
 
 	private static bool IsNextPressed(int pressedButtonCode)
 	{
-		if (pressedButtonCode == 33) // pgUp
+		if (pressedButtonCode == 34) // pgDwn
 			if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
 				return true;
 		return false;
@@ -116,7 +116,7 @@ internal class Programm
 
 	private static bool IsPrevPressed(int pressedButtonCode)
 	{
-		if (pressedButtonCode == 34) // pgDwn
+		if (pressedButtonCode == 33) // pgUp
 			if (Control.ModifierKeys.HasFlag(Keys.Control) && Control.ModifierKeys.HasFlag(Keys.Alt))
 				return true;
 		return false;
