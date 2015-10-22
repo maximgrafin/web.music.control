@@ -50,7 +50,7 @@ function togglePause() {
 			var flag = tab.url.indexOf('play.google.com/music/listen');
 			if (flag >= 0 && flag < 10) {
 				var toggleCommand = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2]) es[0].children[2].click();';
-				var pauseCommand = ' var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2] es[0].children[2].className && es[0].children[2].className.indexOf(\'playing\')>=0) es[0].children[2].click();';
+				var pauseCommand = ' var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2] && es[0].children[2].className && es[0].children[2].className.indexOf(\'playing\')>=0) es[0].children[2].click();';
 
 				var cmd = { code: first ? toggleCommand : pauseCommand };
 				first = false;
