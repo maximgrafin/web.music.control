@@ -1,9 +1,35 @@
+var services = [{
+    prefix: 'new.vk.com',
+    isPlaying: 'document.getElementsByClassName(\'top_audio_player_playing\').length > 0',
+    toggle: 'document.getElementsByClassName(\'top_audio_player_play\')[0].click();'
+}];
+
 function togglePause() {
     chrome.tabs.query({}, function(tabs) {
         console.log(tabs);
         var first = true;
         for (var i in tabs) {
             var tab = tabs[i];
+
+            for (var i in services) {
+                var service = services[i];
+
+                var flag = tab.url.indexOf(service.prefix);
+                if (flag >= 0 && flag <= 10) {
+                    (function() {
+                        var tabId = tab.id;
+                        var _service = services[i];
+                        var _first = first;
+
+                        chrome.tabs.executeScript(tabId, {code: _service.isPlaying}, function(isPlaying) {
+                            if (_first || isPlaying) {
+                                chrome.tabs.executeScript(tabId, {code: _service.toggle});
+                            }
+                        });
+                    })();
+                    first = false;
+                }
+            }
 
             var flag = tab.url.indexOf('music.yandex.ru');
             if (flag >= 0 && flag < 10) {
@@ -26,16 +52,16 @@ function togglePause() {
                 chrome.tabs.executeScript(tab.id, cmd);
             }
 
-            var flag = tab.url.indexOf('new.vk.com');
-            if (flag >= 0 && flag <= 10) {
-                var toggleCommand = 'var e=document.getElementsByClassName(\'top_audio_player_play\')[0];if(e) e.click();';
-                var pauseCommand = 'var h=document.getElementByClass(\'top_audio_player_playing\')[0];if(h) {var e=document.getElementsByClassName(\'top_audio_player_play\')[0];if(e) e.click();}';
-
-                var cmd = {code: first ? toggleCommand : pauseCommand};
-                first = false;
-
-                chrome.tabs.executeScript(tab.id, cmd);
-            }
+            //var flag = tab.url.indexOf('new.vk.com');
+            //if (flag >= 0 && flag <= 10) {
+            //    var toggleCommand = 'var e=document.getElementsByClassName(\'top_audio_player_play\')[0];if(e) e.click();';
+            //    var pauseCommand = 'var h=document.getElementByClass(\'top_audio_player_playing\')[0];if(h) {var e=document.getElementsByClassName(\'top_audio_player_play\')[0];if(e) e.click();}';
+            //
+            //    var cmd = {code: first ? toggleCommand : pauseCommand};
+            //    first = false;
+            //
+            //    chrome.tabs.executeScript(tab.id, cmd);
+            //}
 
             var flag = tab.url.indexOf('8tracks.com');
             if (flag >= 0 && flag <= 10) {
@@ -74,4 +100,4 @@ function togglePause() {
 }
 
 togglePause();
-window.close();
+//window.close();

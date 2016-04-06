@@ -13,8 +13,8 @@
 
  "permissions": [
     "tabs",
-    "http://*.vk.com/*",
-    "https://*.vk.com/*",
+    "http://new.vk.com/*",
+    "https://new.vk.com/*",
     "http://vk.com/*",
     "https://vk.com/*",
     "http://music.yandex.ru/*",
