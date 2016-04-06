@@ -5,6 +5,16 @@ var services = [{
 }];
 
 function togglePause() {
+    chrome.browserAction.getTitle({}, function(title) {
+        if (title == "play") {
+            chrome.browserAction.setIcon({path: "pause.png"});
+            chrome.browserAction.setTitle({title: "pause"});
+        } else {
+            chrome.browserAction.setIcon({path: "play.png"});
+            chrome.browserAction.setTitle({title: "play"});
+        }
+    });
+
     chrome.tabs.query({}, function(tabs) {
         console.log(tabs);
         var first = true;
@@ -100,4 +110,4 @@ function togglePause() {
 }
 
 togglePause();
-//window.close();
+setTimeout(window.close, 1000);

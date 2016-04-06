@@ -2,3 +2,4 @@
 hokey/hokey/bin/*
 hokey/hokey/obj/*
 *.DotSettings.*
+**/.idea/**

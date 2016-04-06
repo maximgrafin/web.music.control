@@ -1,17 +1,16 @@
 {
-   "manifest_version": 2,
-
-   "name": "web.music.control",
-   "version": "2.0",
-
- "background": {
-    "persistent": true,
-	"page": "background.html"
+  "manifest_version": 2,
+  "name": "web.music.control",
+  "version": "2.0",
+  "icons": {
+    "48": "play.png"
   },
-
-	"content_security_policy": "script-src http://localhost:18711; object-src 'self' http://localhost;",
-
- "permissions": [
+  "background": {
+    "persistent": true,
+    "page": "background.html"
+  },
+  "content_security_policy": "script-src http://localhost:18711; object-src 'self' http://localhost;",
+  "permissions": [
     "tabs",
     "http://new.vk.com/*",
     "https://new.vk.com/*",
@@ -26,11 +25,9 @@
     "http://localhost:18711/*",
     "https://play.google.com/*"
   ],
-
   "browser_action": {
-       "default_title": "web.music.control",
-       "default_icon": "pause.png",
-	"default_popup": "popup.html"
-   }
-
+    "default_title": "web.music.control",
+    "default_icon": "pause.png",
+    "default_popup": "popup.html"
+  }
 }
