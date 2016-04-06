@@ -4,10 +4,6 @@
    "name": "web.music.control",
    "version": "2.0",
 
-   "icons": {
-       "48": "j0336656.gif"
-   },
-
  "background": {
     "persistent": true,
 	"page": "background.html"
@@ -17,6 +13,8 @@
 
  "permissions": [
     "tabs",
+    "http://*.vk.com/*",
+    "https://*.vk.com/*",
     "http://vk.com/*",
     "https://vk.com/*",
     "http://music.yandex.ru/*",
@@ -31,7 +29,7 @@
 
   "browser_action": {
        "default_title": "web.music.control",
-       "default_icon": "Button_Pause.png",
+       "default_icon": "pause.png",
 	"default_popup": "popup.html"
    }
 
