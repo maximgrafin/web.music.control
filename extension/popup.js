@@ -156,4 +156,4 @@ function togglePause() {
 }
 
 togglePause();
-//setTimeout(window.close, 100);
+setTimeout(window.close, 100);
