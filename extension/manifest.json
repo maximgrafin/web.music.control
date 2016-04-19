@@ -12,6 +12,8 @@
   "content_security_policy": "script-src http://localhost:18711; object-src 'self' http://localhost;",
   "permissions": [
     "tabs",
+    "https://soundcloud.com/*",
+    "https://www.periscope.tv/*",
     "http://www.silver.ru/*",
     "http://www.mixcloud.com/*",
     "https://www.mixcloud.com/*",

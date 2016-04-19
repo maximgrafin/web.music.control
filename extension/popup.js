@@ -12,6 +12,14 @@ var services = [{
     isPlaying: '(!document.getElementsByTagName("audio")[0].paused)',
     play: 'document.getElementsByTagName("audio")[0].play()',
     pause: 'document.getElementsByTagName("audio")[0].pause()'
+}, {
+    prefix: 'www.periscope.tv',
+    isPlaying: 'document.getElementsByClassName(\'is-playing\').length > 0',
+    toggle: 'document.getElementsByClassName(\'PlaybackControls\')[0].click();'
+}, {
+    prefix: 'soundcloud.com',
+    isPlaying: 'document.getElementsByClassName(\'playControl\').length > 0 && document.getElementsByClassName(\'playControl\')[0].class.indexOf(playing)>=0',
+    toggle: 'document.getElementsByClassName(\'playControl\')[0].click();'
 }];
 
 function pause(tabId, service) {
@@ -86,71 +94,6 @@ function togglePause() {
                     first = false;
                 }
             }
-
-            //var flag = tab.url.indexOf('music.yandex.ru');
-            //if (flag >= 0 && flag < 10) {
-            //    var toggleCommand = 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e) e.click();';
-            //    var pauseCommand = 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e && e.className && e.className.indexOf(\'b-jambox__playing\')>=0) e.click();';
-            //
-            //    var cmd = {code: first ? toggleCommand : pauseCommand};
-            //    first = false;
-            //    chrome.tabs.executeScript(tab.id, cmd);
-            //}
-            //
-            //var flag = tab.url.indexOf('vk.com');
-            //if (flag >= 0 && flag <= 10) {
-            //    var toggleCommand = 'var e=document.getElementById(\'head_play_btn\');if(e)e.click();';
-            //    var pauseCommand = 'var e=document.getElementById(\'head_play_btn\');if(e && e.className && e.className.indexOf(\'playing\')>=0)e.click();';
-            //
-            //    var cmd = {code: first ? toggleCommand : pauseCommand};
-            //    first = false;
-            //
-            //    chrome.tabs.executeScript(tab.id, cmd);
-            //}
-            //
-            //var flag = tab.url.indexOf('new.vk.com');
-            //if (flag >= 0 && flag <= 10) {
-            //    var toggleCommand = 'var e=document.getElementsByClassName(\'top_audio_player_play\')[0];if(e) e.click();';
-            //    var pauseCommand = 'var h=document.getElementByClass(\'top_audio_player_playing\')[0];if(h) {var e=document.getElementsByClassName(\'top_audio_player_play\')[0];if(e) e.click();}';
-            //
-            //    var cmd = {code: first ? toggleCommand : pauseCommand};
-            //    first = false;
-            //
-            //    chrome.tabs.executeScript(tab.id, cmd);
-            //}
-            //
-            //var flag = tab.url.indexOf('8tracks.com');
-            //if (flag >= 0 && flag <= 10) {
-            //    var toggleCommand = 'var e=document.getElementById(\'player_play_button\');if(e)e.click();';
-            //    var pauseCommand = 'var e=document.getElementById(\'player_play_button\');if(e && e.style && e.style.display && e.style.display==\'none\')e.click();';
-            //
-            //    var cmd = {code: first ? toggleCommand : pauseCommand};
-            //    first = false;
-            //
-            //    chrome.tabs.executeScript(tab.id, cmd);
-            //}
-            //
-            //var flag = tab.url.indexOf('soundcloud.com');
-            //if (flag >= 0 && flag < 10) {
-            //    var toggleCommand = 'var es=document.getElementsByClassName(\'playControl\');if(es && es[0]) es[0].click();';
-            //    var pauseCommand = 'var es=document.getElementsByClassName(\'playControl\');if(es && es[0] && es[0].className && es[0].className.indexOf(\'playing\')>=0) es[0].click();';
-            //
-            //    var cmd = {code: first ? toggleCommand : pauseCommand};
-            //    first = false;
-            //
-            //    chrome.tabs.executeScript(tab.id, cmd);
-            //}
-            //
-            //var flag = tab.url.indexOf('play.google.com/music/listen');
-            //if (flag >= 0 && flag < 10) {
-            //    var toggleCommand = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2]) es[0].children[2].click();';
-            //    var pauseCommand = ' var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2] && es[0].children[2].className && es[0].children[2].className.indexOf(\'playing\')>=0) es[0].children[2].click();';
-            //
-            //    var cmd = {code: first ? toggleCommand : pauseCommand};
-            //    first = false;
-            //
-            //    chrome.tabs.executeScript(tab.id, cmd);
-            //}
         }
     });
 }
