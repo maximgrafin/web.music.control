@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Main {
+public class HoKeyServer {
 	private final static ReentrantLock lock = new ReentrantLock();
 	private final static Condition eventHappened = lock.newCondition();
 	private static String lastCommand = null;
@@ -25,6 +25,7 @@ public class Main {
 		hotKeyServer.createContext("/event", eventHandler);
 		hotKeyServer.setExecutor(java.util.concurrent.Executors.newCachedThreadPool()); // creates a default executor
 		hotKeyServer.start();
+		System.out.println("hoKeyServer started");
 	}
 
 	static class hotKeyServerHandler implements HttpHandler {
