@@ -37,7 +37,7 @@ public class HoKeyServer {
 					System.out.println("hotKeyServerHandler: " + lastCommand);
 					sendResponse(lastCommand, t);
 				} else {
-					if (!eventHappened.await(10L, TimeUnit.SECONDS)) {
+					if (!eventHappened.await(60L, TimeUnit.SECONDS)) {
 						lastCommand = "nothing";
 					}
 					System.out.println("hotKeyServerHandler: " + lastCommand);

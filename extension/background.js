@@ -1,174 +1,148 @@
+var services = [{
+    prefix: 'new.vk.com',
+    isPlaying: 'document.getElementsByClassName(\'top_audio_player_playing\').length > 0',
+    toggle: 'document.getElementsByClassName(\'top_audio_player_play\')[0].click();',
+    next: 'document.getElementsByClassName(\'top_audio_player_next\')[0].click();',
+    prev: 'document.getElementsByClassName(\'top_audio_player_prev\')[0].click();',
+    manipulateFirst: true
+}, {
+    prefix: 'www.mixcloud.com',
+    isPlaying: 'document.getElementsByClassName(\'pause-state\').length > 0',
+    toggle: 'document.getElementsByClassName(\'player-control\')[0].click();'
+}, {
+    prefix: 'www.silver.ru',
+    isPlaying: '(!document.getElementsByTagName("audio")[0].paused)',
+    play: 'document.getElementsByTagName("audio")[0].play()',
+    pause: 'document.getElementsByTagName("audio")[0].pause()'
+}, {
+    prefix: 'www.periscope.tv',
+    isPlaying: 'document.getElementsByClassName(\'is-playing\').length > 0',
+    toggle: 'document.getElementsByClassName(\'PlaybackControls\')[0].click();'
+}, {
+    prefix: 'soundcloud.com',
+    isPlaying: 'document.getElementsByClassName(\'playControl\').length > 0 && document.getElementsByClassName(\'playControl\')[0].class.indexOf(playing)>=0',
+    toggle: 'document.getElementsByClassName(\'playControl\')[0].click();'
+}];
+
+function pause(tabId, service) {
+    if (service.hasOwnProperty("toggle")) {
+        chrome.tabs.executeScript(tabId, {code: service.toggle});
+    } else {
+        chrome.tabs.executeScript(tabId, {code: service.pause});
+    }
+}
+
+function next(tabId, service) {
+    if (service.hasOwnProperty("next")) {
+        chrome.tabs.executeScript(tabId, {code: service.next});
+    } else {
+        console.log("service " + service.prefix + " does not support next");
+    }
+}
+
+function prev(tabId, service) {
+    if (service.hasOwnProperty("prev")) {
+        chrome.tabs.executeScript(tabId, {code: service.prev});
+    } else {
+        console.log("service " + service.prefix + " does not support prev");
+    }
+}
+
+function play(tabId, service) {
+    if (service.hasOwnProperty("toggle")) {
+        chrome.tabs.executeScript(tabId, {code: service.toggle});
+    } else {
+        chrome.tabs.executeScript(tabId, {code: service.play});
+    }
+}
+
+function getIsPlaying(tabId, service, callBack) {
+    chrome.tabs.executeScript(tabId, {code: service.isPlaying}, function(args) {
+        callBack(args[0]);
+    });
+}
+
+function foreachTab(callback) {
+    chrome.tabs.query({}, function(tabs) {
+        //console.log(tabs);
+        for (var i in services) {
+            services[i].visited = false;
+        }
+
+        var first = true;
+        for (var i in tabs) {
+            var tab = tabs[i];
+
+            for (var i in services) {
+                var service = services[i];
+
+                var flag = tab.url.indexOf(service.prefix);
+                if (flag >= 0 && flag <= 10) {
+                    (function() {
+                        var tabId = tab.id;
+                        var _service = services[i];
+                        var _first = first;
+                        var _firstSame = !_service.visited;
+                        _service.visited = true;
+
+                        getIsPlaying(tabId, _service, function(isPlaying) {
+                            callback(tabId, _service, _first, _firstSame, isPlaying);
+                        });
+                    })();
+                    first = false;
+                }
+            }
+        }
+    });
+}
+
 function togglePause() {
-	chrome.tabs.query({}, function (tabs) {
-		var first = true;
-		for (var i in tabs) {
-			var tab = tabs[i];
+    foreachTab(function(tabId, _service, _first, _firstSame, isPlaying) {
+        if (_service.manipulateFirst && !_firstSame) {
+            return;
+        }
 
-			var flag = tab.url.indexOf('music.yandex.ru');
-			if (flag >= 0 && flag < 10) {
-				var toggleCommand = 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e) e.click();';
-				var pauseCommand = 'var e = document.getElementsByClassName(\'b-jambox__play\')[0]; if(e && e.className && e.className.indexOf(\'b-jambox__playing\')>=0) e.click();';
+        if (isPlaying) {
+            pause(tabId, _service);
+        }
 
-				var cmd = { code: first ? toggleCommand : pauseCommand };
-				first = false;
-				chrome.tabs.executeScript(tab.id, cmd);
-			}
-
-			var flag = tab.url.indexOf('vk.com');
-			if (flag >= 0 && flag < 10) {
-				var toggleCommand = 'var e=document.getElementById(\'head_play_btn\');if(e)e.click();';
-				var pauseCommand = 'var e=document.getElementById(\'head_play_btn\');if(e && e.className && e.className.indexOf(\'playing\')>=0)e.click();';
-
-				var cmd = { code: first ? toggleCommand : pauseCommand };
-				first = false;
-
-				chrome.tabs.executeScript(tab.id, cmd);
-			}
-
-			var flag = tab.url.indexOf('8tracks.com');
-			if (flag >= 0 && flag < 10) {
-				var toggleCommand = 'var e=document.getElementById(\'player_play_button\');if(e)e.click();';
-				var pauseCommand = 'var e=document.getElementById(\'player_play_button\');if(e && e.style && e.style.display && e.style.display==\'none\')e.click();';
-
-				var cmd = { code: first ? toggleCommand : pauseCommand };
-				first = false;
-
-				chrome.tabs.executeScript(tab.id, cmd);
-			}
-
-			var flag = tab.url.indexOf('soundcloud.com');
-			if (flag >= 0 && flag < 10) {
-				var toggleCommand = 'var es=document.getElementsByClassName(\'playControl\');if(es && es[0]) es[0].click();';
-				var pauseCommand = 'var es=document.getElementsByClassName(\'playControl\');if(es && es[0] && es[0].className && es[0].className.indexOf(\'playing\')>=0) es[0].click();';
-
-				var cmd = { code: first ? toggleCommand : pauseCommand };
-				first = false;
-
-				chrome.tabs.executeScript(tab.id, cmd);
-			}
-
-			var flag = tab.url.indexOf('play.google.com/music/listen');
-			if (flag >= 0 && flag < 10) {
-				var toggleCommand = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2]) es[0].children[2].click();';
-				var pauseCommand = ' var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[2] && es[0].children[2].className && es[0].children[2].className.indexOf(\'playing\')>=0) es[0].children[2].click();';
-
-				var cmd = { code: first ? toggleCommand : pauseCommand };
-				first = false;
-
-				chrome.tabs.executeScript(tab.id, cmd);
-			}
-		}
-	});
+        if (_first && !isPlaying) {
+            play(tabId, _service);
+        }
+    });
 }
 
 function nextTrack() {
-	chrome.tabs.query({}, function (tabs) {
-		for (var i in tabs) {
-			var tab = tabs[i];
-			var yandexFlag = tab.url.indexOf('music.yandex.ru');
-			if (yandexFlag >= 0 && yandexFlag < 10) {
-				var command = 'var e = document.getElementsByClassName(\'b-jambox__next\'); if(e.length>0) e[0].click()';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('vk.com');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var m = document.getElementById(\'head_music\'); if(m && m.className.indexOf(\'over\')<0) m.click(); var e = document.getElementsByClassName(\'next\'); if(e.length>0) e[0].click()';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('8tracks.com');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var e = document.getElementById(\'player_skip_button\'); if(e) e.click()';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('soundcloud.com');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var es=document.getElementsByClassName(\'skipControl__next\');if(es && es[0]) es[0].click();';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('play.google.com/music/listen');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[3]) es[0].children[3].click();';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-		}
-		window.close();
-	})
+    foreachTab(function(tabId, _service, _first, _firstSame, isPlaying) {
+        if (!isPlaying) {
+            return;
+        }
+        next(tabId, _service);
+    });
 }
 
 function prevTrack() {
-	chrome.tabs.query({}, function (tabs) {
-		for (var i in tabs) {
-			var tab = tabs[i];
-			var yandexFlag = tab.url.indexOf('music.yandex.ru');
-			if (yandexFlag >= 0 && yandexFlag < 10) {
-				var command = 'var e = document.getElementsByClassName(\'b-jambox__prev\'); if(e.length>0) e[0].click()';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('vk.com');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var m = document.getElementById(\'head_music\'); if(m && m.className.indexOf(\'over\')<0) m.click(); var e = document.getElementsByClassName(\'prev\'); if(e.length>0) e[0].click()';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('8tracks.com');
-			if (flag >= 0 && flag < 10)
-				return;
-
-			var flag = tab.url.indexOf('soundcloud.com');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var es=document.getElementsByClassName(\'skipControl__previous\');if(es && es[0]) es[0].click();';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-
-			var flag = tab.url.indexOf('play.google.com/music/listen');
-			if (flag >= 0 && flag < 10) {
-				var command = 'var es=document.getElementsByClassName(\'material-player-middle\');if(es && es[0] && es[0].children && es[0].children[1]) es[0].children[1].click();';
-				var cmd = { code: command };
-				chrome.tabs.executeScript(tab.id, cmd);
-				return;
-			}
-		}
-		window.close();
-	})
 }
 
 function listenForHotKeys() {
-	$.ajax({
-		url: "http://localhost:18711/hotkeys/",
-	}).done(function (data) {
-		console.log(data)
-		if (data == 'pause')
-			togglePause();
-		if (data == 'next')
-			nextTrack();
-		if (data == 'prev')
-			prevTrack();
-		listenForHotKeys();
-	}).error(function (data) {
-		console.log("hotKey service error " + data.status);
-		setTimeout(listenForHotKeys, 60000);
-	});
+    $.ajax({
+        url: "http://localhost:18711/hotkeys/",
+    }).done(function(data) {
+        console.log(data)
+        if (data == 'pause') {
+            togglePause();
+        }
+        if (data == 'next') {
+            nextTrack();
+        }
+        if (data == 'prev') {
+            prevTrack();
+        }
+        listenForHotKeys();
+    }).error(function(data) {
+        console.log("hotKey service error " + data.status);
+        setTimeout(listenForHotKeys, 10000);
+    });
 }
 
 listenForHotKeys();
