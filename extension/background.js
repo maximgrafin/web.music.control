@@ -122,6 +122,12 @@ function nextTrack() {
 }
 
 function prevTrack() {
+    foreachTab(function(tabId, _service, _first, _firstSame, isPlaying) {
+        if (!isPlaying) {
+            return;
+        }
+        prev(tabId, _service);
+    });
 }
 
 function listenForHotKeys() {
