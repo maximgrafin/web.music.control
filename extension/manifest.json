@@ -11,6 +11,7 @@
   },
   "content_security_policy": "script-src http://localhost:18711; object-src 'self' http://localhost;",
   "permissions": [
+    "webNavigation",
     "tabs",
     "https://soundcloud.com/*",
     "https://www.periscope.tv/*",
@@ -28,7 +29,8 @@
     "http://soundcloud.com/*",
     "https://soundcloud.com/*",
     "http://localhost:18711/*",
-    "https://play.google.com/*"
+    "https://play.google.com/*",
+    "https://play.spotify.com/*"
   ],
   "browser_action": {
     "default_title": "web.music.control",
