@@ -30,7 +30,8 @@
     "https://soundcloud.com/*",
     "http://localhost:18711/*",
     "https://play.google.com/*",
-    "https://play.spotify.com/*"
+    "https://play.spotify.com/*",
+    "https://www.youtube.com/*"
   ],
   "browser_action": {
     "default_title": "web.music.control",

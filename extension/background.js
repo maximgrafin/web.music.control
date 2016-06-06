@@ -23,6 +23,10 @@ var services = [{
     isPlaying: 'document.getElementsByClassName(\'playControl\').length > 0 && document.getElementsByClassName(\'playControl\')[0].className.indexOf(\'playing\')>=0',
     toggle: 'document.getElementsByClassName(\'playControl\')[0].click();'
 }, {
+    prefix: 'www.youtube.com',
+    isPlaying: 'document.getElementsByClassName(\'html5-video-player\').length > 0 && document.getElementsByClassName(\'html5-video-player\')[0].className.indexOf(\'playing-mode\')>=0',
+    toggle: 'document.getElementsByClassName(\'ytp-play-button\')[0].click();'
+}, {
     prefix: 'play.spotify.com',
     isPlaying: 'document.getElementById(\'play-pause\') && document.getElementById(\'play-pause\').className.indexOf(\'playing\')>=0',
     toggle: 'document.getElementById(\'play-pause\').click();',
@@ -31,7 +35,7 @@ var services = [{
     frameUrl: "play.spotify.com/apps/player"
 }];
 
-function executeOnFrame(tabId, code, frameId, callBack){
+function executeOnFrame(tabId, code, frameId, callBack) {
     chrome.tabs.executeScript(tabId, {code: code, frameId: frameId || 0}, function(args) {
         if (callBack) {
             callBack(args[0]);
@@ -39,9 +43,10 @@ function executeOnFrame(tabId, code, frameId, callBack){
     });
 }
 
-function getFrameId(tabId, frameUrl, callBack){
-    if(!frameUrl)
+function getFrameId(tabId, frameUrl, callBack) {
+    if (!frameUrl) {
         return callBack(0);
+    }
 
     chrome.webNavigation.getAllFrames({tabId: tabId}, function(frames) {
         for (var i in frames) {
@@ -54,7 +59,7 @@ function getFrameId(tabId, frameUrl, callBack){
 }
 
 function executeScript(tabId, code, frameUrl, callBack) {
-    getFrameId(tabId, frameUrl, function(frameId){
+    getFrameId(tabId, frameUrl, function(frameId) {
         executeOnFrame(tabId, code, frameId, callBack);
     });
 }
@@ -110,6 +115,8 @@ function foreachTab(callback) {
         var first = true;
         for (var i in tabs) {
             var tab = tabs[i];
+
+            var _debug = {};
 
             for (var i in services) {
                 var service = services[i];
