@@ -1,5 +1,5 @@
 var services = [{
-    prefix: 'new.vk.com',
+    prefix: 'vk.com',
     isPlaying: 'document.getElementsByClassName(\'top_audio_player_playing\').length > 0',
     toggle: 'document.getElementsByClassName(\'top_audio_player_play\')[0].click();',
     next: 'document.getElementsByClassName(\'top_audio_player_next\')[0].click();',

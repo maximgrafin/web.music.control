@@ -1,6 +1,6 @@
 #!/bin/sh
 SERVICE_NAME=hokeyServer
-PATH_TO_JAR=/home/ms/work/web.music.control/hokeyServer_jar/hokeyServer.jar
+PATH_TO_JAR=/Users/sadym/private/web.music.control/hokeyServer_jar/hokeyServer.jar
 PID_PATH_NAME=/tmp/112233
 case $1 in
     start)

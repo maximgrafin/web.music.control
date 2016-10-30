@@ -1,7 +1,9 @@
 var services = [{
-    prefix: 'new.vk.com',
+    prefix: 'vk.com',
     isPlaying: 'document.getElementsByClassName(\'top_audio_player_playing\').length > 0',
     toggle: 'document.getElementsByClassName(\'top_audio_player_play\')[0].click();',
+    next: 'document.getElementsByClassName(\'top_audio_player_next\')[0].click();',
+    prev: 'document.getElementsByClassName(\'top_audio_player_prev\')[0].click();',
     manipulateFirst: true
 }, {
     prefix: 'www.mixcloud.com',
@@ -18,23 +20,63 @@ var services = [{
     toggle: 'document.getElementsByClassName(\'PlaybackControls\')[0].click();'
 }, {
     prefix: 'soundcloud.com',
-    isPlaying: 'document.getElementsByClassName(\'playControl\').length > 0 && document.getElementsByClassName(\'playControl\')[0].class.indexOf(playing)>=0',
+    isPlaying: 'document.getElementsByClassName(\'playControl\').length > 0 && document.getElementsByClassName(\'playControl\')[0].className.indexOf(\'playing\')>=0',
     toggle: 'document.getElementsByClassName(\'playControl\')[0].click();'
+}, {
+    prefix: 'www.youtube.com',
+    isPlaying: 'document.getElementsByClassName(\'html5-video-player\').length > 0 && document.getElementsByClassName(\'html5-video-player\')[0].className.indexOf(\'playing-mode\')>=0',
+    toggle: 'document.getElementsByClassName(\'ytp-play-button\')[0].click();'
+}, {
+    prefix: 'play.spotify.com',
+    isPlaying: 'document.getElementById(\'play-pause\') && document.getElementById(\'play-pause\').className.indexOf(\'playing\')>=0',
+    toggle: 'document.getElementById(\'play-pause\').click();',
+    next: 'document.getElementById(\'next\').click();',
+    prev: 'document.getElementById(\'previous\').click();',
+    frameUrl: "play.spotify.com/apps/player"
 }];
+
+function executeOnFrame(tabId, code, frameId, callBack) {
+    chrome.tabs.executeScript(tabId, {code: code, frameId: frameId || 0}, function(args) {
+        if (callBack) {
+            callBack(args[0]);
+        }
+    });
+}
+
+function getFrameId(tabId, frameUrl, callBack) {
+    if (!frameUrl) {
+        return callBack(0);
+    }
+
+    chrome.webNavigation.getAllFrames({tabId: tabId}, function(frames) {
+        for (var i in frames) {
+            var frame = frames[i];
+            if (startsWith(frame.url, frameUrl)) {
+                callBack(frame.frameId);
+            }
+        }
+    });
+}
+
+function executeScript(tabId, code, frameUrl, callBack) {
+    getFrameId(tabId, frameUrl, function(frameId) {
+        executeOnFrame(tabId, code, frameId, callBack);
+    });
+}
 
 function pause(tabId, service) {
     if (service.hasOwnProperty("toggle")) {
-        chrome.tabs.executeScript(tabId, {code: service.toggle});
+        executeScript(tabId, service.toggle, service.frameUrl);
     } else {
-        chrome.tabs.executeScript(tabId, {code: service.pause});
+        executeScript(tabId, service.pause, service.frameUrl);
     }
 }
 
 function play(tabId, service) {
     if (service.hasOwnProperty("toggle")) {
-        chrome.tabs.executeScript(tabId, {code: service.toggle});
+        executeScript(tabId, service.toggle, service.frameUrl);
     } else {
-        chrome.tabs.executeScript(tabId, {code: service.play});
+        executeScript(tabId, service.play, service.frameUrl);
     }
 }
 
