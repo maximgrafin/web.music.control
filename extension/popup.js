@@ -110,6 +110,11 @@ function getIsPlaying(tabId, service, callBack) {
 	});
 }
 
+function startsWith(origin, subStr) {
+	var flag = origin.indexOf(subStr);
+	return flag >= 0 && flag <= 100;
+}
+
 function togglePause() {
 	toggleIcon();
 
@@ -153,4 +158,4 @@ function togglePause() {
 }
 
 togglePause();
-// setTimeout(window.close, 100);
+setTimeout(window.close, 100);
